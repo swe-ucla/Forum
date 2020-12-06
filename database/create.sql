@@ -1,7 +1,7 @@
 DROP DATABASE IF EXISTS sweforumdb; 
-
 CREATE DATABASE sweforumdb;
 \c sweforumdb;
+
 
 CREATE TABLE subforums (
   forum_id SERIAL PRIMARY KEY,
