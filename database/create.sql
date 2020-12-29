@@ -17,8 +17,19 @@ CREATE TABLE users (
 
 CREATE TABLE posts (
   p_id SERIAL PRIMARY KEY,
-  title VARCHAR(255),
   forum_id INT REFERENCES subforums(forum_id),
+  title VARCHAR(255),
+  content VARCHAR,
+  user_id INT REFERENCES users(user_id),
+  username VARCHAR REFERENCES users(username),
+  date_created TIMESTAMP,
+  data_lastUpdated TIMESTAMP
+);
+
+CREATE TABLE comments (
+  c_id SERIAL PRIMARY KEY,
+  post_id INT REFERENCES posts(p_id),
+  parent_comment_id INT REFERENCES comments(c_id),
   content VARCHAR,
   user_id INT REFERENCES users(user_id),
   username VARCHAR REFERENCES users(username),
