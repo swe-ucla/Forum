@@ -9,30 +9,32 @@ CREATE TABLE subforums (
 );
 
 CREATE TABLE users (
-  user_id SERIAL PRIMARY KEY,
+  uid SERIAL PRIMARY KEY,
   username VARCHAR(255) UNIQUE,
   email VARCHAR(255),
-  email_verified BOOLEAN
+  email_verified BOOLEAN,
+  date_created DATE,
+  last_login DATE
 );
 
 CREATE TABLE posts (
-  p_id SERIAL PRIMARY KEY,
+  pid SERIAL PRIMARY KEY,
   forum_id INT REFERENCES subforums(forum_id),
   title VARCHAR(255),
-  content VARCHAR,
-  user_id INT REFERENCES users(user_id),
+  body VARCHAR,
+  user_id INT REFERENCES users(uid),
   username VARCHAR REFERENCES users(username),
   date_created TIMESTAMP,
   data_lastUpdated TIMESTAMP
 );
 
 CREATE TABLE comments (
-  c_id SERIAL PRIMARY KEY,
-  post_id INT REFERENCES posts(p_id),
-  parent_comment_id INT REFERENCES comments(c_id),
-  content VARCHAR,
-  user_id INT REFERENCES users(user_id),
+  cid SERIAL PRIMARY KEY,
+  comment VARCHAR,
   username VARCHAR REFERENCES users(username),
+  user_id INT REFERENCES users(uid),
+  post_id INT REFERENCES posts(pid),
+  parent_comment_id INT REFERENCES comments(cid),
   date_created TIMESTAMP,
   data_lastUpdated TIMESTAMP
 );
