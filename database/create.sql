@@ -25,7 +25,7 @@ CREATE TABLE posts (
   user_id INT REFERENCES users(uid),
   username VARCHAR REFERENCES users(username),
   date_created TIMESTAMP,
-  data_lastUpdated TIMESTAMP
+  date_last_updated TIMESTAMP
 );
 
 CREATE TABLE comments (
@@ -36,7 +36,7 @@ CREATE TABLE comments (
   post_id INT REFERENCES posts(pid),
   parent_comment_id INT REFERENCES comments(cid),
   date_created TIMESTAMP,
-  data_lastUpdated TIMESTAMP
+  date_last_updated TIMESTAMP
 );
 
 
