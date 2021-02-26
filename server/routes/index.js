@@ -9,10 +9,6 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 }); */
 
-router.get('/hello', function(req, res) {
-  res.json('hello world')
-})
-
 // get posts
 router.get('/api/get/allposts', (req, res, next ) => {
   pool.query("SELECT * FROM posts ORDER BY date_created DESC", (q_err, q_res) => {
@@ -25,7 +21,14 @@ router.post('/api/posts/poststodb', (req, res, next) => {
   const values = [req.body.title, req.body.body, req.body.uid, req.body.username]
   pool.query('INSERT INTO posts(title, body, user_id, username, date_created) VALUES($1, $2, $3, $4, NOW())', values, (q_err, q_res) => {
       if(q_err) return next(q_err);
-      res.json(values)
+      res.json(
+        {
+          title: values[0],
+          body: values[1],
+          uid: values[2],
+          username: values[3]
+        }
+      )
   })
 })
 
@@ -50,7 +53,11 @@ router.delete('/api/delete/postcomments', (req, res, next) => {
 router.delete('/api/delete/post', (req, res, next) => {
   const post_id = req.body.post_id
   pool.query('DELETE FROM posts WHERE pid = $1', [ post_id ], (q_err, q_res) => {
-    res.json(post_id)
+    res.json(
+      {
+        deleted: post_id
+      }
+    )
   })
 })
 
