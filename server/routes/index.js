@@ -36,7 +36,15 @@ router.post('/api/posts/poststodb', (req, res, next) => {
 router.put('/api/put/post', (req, res, next) => {
   const value = [req.body.title, req.body.body, req.body.uid, req.body.pid, req.body.username]
   pool.query('UPDATE posts SET title=$1, body=$2, user_id=$3, username=$5, date_created=NOW() WHERE pid = $4', values, (q_err, q_res) => {
-    res.json(q_res.rows)
+    res.json(
+      {
+        title: values[0],
+        body: values[1],
+        uid: values[2],
+        pid: values[3],
+        username: values[4]
+      }
+    )
   })
 })
 
@@ -44,8 +52,11 @@ router.put('/api/put/post', (req, res, next) => {
 router.delete('/api/delete/postcomments', (req, res, next) => {
   const post_id = req.body.post_id
   pool.query('DELETE FROM comments WHERE post_id = $1', [ post_id ], (q_err, q_res) => {
-    res.json(q_res.rows)
-    console.log(q_err)
+    res.json(
+      {
+        deleted: post_id
+      }
+    )
   })
 })
 
