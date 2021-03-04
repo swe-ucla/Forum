@@ -16,25 +16,55 @@ router.get('/api/get/allposts', (req, res, next ) => {
   })
 })
 
-// save post
-router.post('/api/posts/poststodb', (req, res, next) => {
-  const values = [req.body.title, req.body.body, req.body.uid, req.body.username]
-  pool.query('INSERT INTO posts(title, body, user_id, username, date_created) VALUES($1, $2, $3, $4, NOW())', values, (q_err, q_res) => {
-      if(q_err) return next(q_err);
-      res.json(
-        {
-          title: values[0],
-          body: values[1],
-          uid: values[2],
-          username: values[3]
-        }
-      )
+// save subforum
+router.post('/api/post/subforumtodb', (req, res, next) => {
+  const values = [req.body.forum_id, req.body.forum_name]
+  pool.query('INSERT INTO subforums(forum_id, forum_name) VALUES($1, $2)', values, (q_err, q_res) => {
+    if(q_err) return next(q_err)
+    res.json(
+      {
+        forum_id: values[0],
+        forum_name: values[1],
+      }
+    )
   })
+})
+
+// save post
+router.post('/api/post/poststodb', (req, res, next) => {
+  try {
+    const subForumName = [req.body.subforum]
+
+    //use subforum name to identify subforum id. 
+    pool.query("SELECT forum_id FROM subforums WHERE forum_name = $1", subForumName, (q_err, q_res) => {
+      if(q_err) return next(q_err);
+      
+      forumId = q_res.rows[0].forum_id
+      const values = [forumId, req.body.title, req.body.body, req.body.uid, req.body.username] 
+      
+      pool.query('INSERT INTO posts(forum_id, title, body, user_id, username, date_created, date_last_updated) VALUES($1, $2, $3, $4, $5, NOW(), NOW())', values, (q_err, q_res) => {
+        if(q_err) return next(q_err)
+        res.json(
+          {
+            subforum: values[0],
+            title: values[1],
+            body: values[2],
+            uid: values[3],
+            username: values[4],
+          }
+        )
+      })
+    })
+  } catch(error) {
+      console.log('ERROR:', error)
+      res.status(500).send('service internal error')
+  }
+
 })
 
 // update posts
 router.put('/api/put/post', (req, res, next) => {
-  const value = [req.body.title, req.body.body, req.body.uid, req.body.pid, req.body.username]
+  const values = [req.body.title, req.body.body, req.body.uid, req.body.pid, req.body.username]
   pool.query('UPDATE posts SET title=$1, body=$2, user_id=$3, username=$5, date_created=NOW() WHERE pid = $4', values, (q_err, q_res) => {
     res.json(
       {
