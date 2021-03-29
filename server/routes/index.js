@@ -116,4 +116,11 @@ router.delete('/api/delete/subforumposts', (req, res, next) => {
   })
 })
 
+// delete all posts
+router.delete('/api/delete/allposts', (req, res, next) => {
+  pool.query("DELETE FROM posts", (q_err, q_res) => {
+    res.json("success")
+  })
+})
+
 module.exports = router;
