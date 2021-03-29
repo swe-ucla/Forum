@@ -104,4 +104,16 @@ router.delete('/api/delete/post', (req, res, next) => {
   })
 })
 
+// delete subforum-specific posts
+router.delete('/api/delete/subforumposts', (req, res, next) => {
+  const forum_id = req.body.subforum
+  pool.query('DELETE FROM posts WHERE forum_id = $1', [ forum_id ], (q_err, q_res) => {
+    res.json(
+      {
+        deleted_forum_id: forum_id
+      }
+    )
+  })
+})
+
 module.exports = router;
