@@ -3,14 +3,16 @@ var router = express.Router();
 var pool = require('../db')
 
 
+// get subforum-specific posts
+router.get('/api/get/subforumposts', (req, res, next) => {
+  const forum_id = [req.body.subforum]
+  pool.query("SELECT * FROM posts WHERE forum_id = $1", forum_id, (q_err, q_res) => {
+      res.json(q_res.rows)
+  })
+})
 
-/* GET home page. 
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-}); */
-
-// get posts
-router.get('/api/get/allposts', (req, res, next ) => {
+// get all posts
+router.get('/api/get/allposts', (req, res, next) => {
   pool.query("SELECT * FROM posts ORDER BY date_created DESC", (q_err, q_res) => {
       res.json(q_res.rows)
   })
